@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benchmarking NeRF Variants on Sparse-View Reconstruction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    img, video {
+      max-width: 100%;
+      height: auto;
+    }
+    .section {
+      margin-bottom: 3rem;
+    }
+    code {
+      background: #f2f2f2;
+      padding: 2px 4px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simran Jot Kaur — Benchmarking NeRF Variants on Sparse-View Reconstruction</h1>
+
+  <div class="section">
+    <h2>Problem Summary</h2>
+    <p>Neural Radiance Fields (NeRFs) are powerful tools for synthesizing novel views of a scene. However, they typically require a large number of input images. In many practical applications like AR/VR, robotics, and medical imaging, we often only have access to a few views. This project benchmarks NeRF variants designed to operate effectively under such sparse-view constraints.</p>
+  </div>
+
+  <div class="section">
+    <h2>Previous Work</h2>
+    <ul>
+      <li><strong>PixelNeRF</strong>: Introduces scene-agnostic priors using CNN-based feature extraction.</li>
+      <li><strong>SparseNeRF</strong>: Utilizes self-supervised geometric consistency via depth ranking.</li>
+      <li><strong>S3NeRF</strong>: Leverages multi-view feature fusion and scene-specific training.</li>
+      <li><strong>ZeroRF</strong>: A Deep Image Prior method that trains per-scene without pretraining.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Description of Work</h2>
+    <p>We implemented and evaluated four NeRF models under sparse-view constraints (1, 3, and 9 input views) across two datasets: <strong>NeRF-Synthetic</strong> and <strong>DTU</strong>. Metrics used include PSNR, SSIM, LPIPS, and MAE.</p>
+    <p>Models were tested for generalization, geometric fidelity, perceptual quality, and computational efficiency.</p>
+  </div>
+
+  <div class="section">
+    <h2>Results</h2>
+    <ul>
+      <li><strong>PixelNeRF</strong>: Best generalization on unseen scenes; performance drops in 1-view settings.</li>
+      <li><strong>SparseNeRF</strong>: Excellent geometry retention from 1–3 views, especially in occluded regions.</li>
+      <li><strong>S3NeRF</strong>: Best perceptual and structural quality; more memory-intensive.</li>
+      <li><strong>ZeroRF</strong>: Works well with 3+ views but slower and less detailed under severe sparsity.</li>
+    </ul>
+    <img src="results/sparse_nerf_comparison.png" alt="Comparison Chart">
+  </div>
+
+  <div class="section">
+    <h2>Analysis of Work</h2>
+    <h3>New Results</h3>
+    <p>This project presents the first direct benchmark comparison across four NeRF variants on sparse inputs under unified conditions. It highlights the individual strengths and limitations of each approach.</p>
+
+    <h3>Meeting Goals</h3>
+    <p>We achieved our goals of comparing performance across sparse scenarios, identifying suitable models per use case, and proposing a hybrid design for future work.</p>
+
+    <h3>Future Work</h3>
+    <p>We propose a hybrid architecture combining:</p>
+    <ul>
+      <li>PixelNeRF’s encoder for generalization</li>
+      <li>S3NeRF’s feature fusion for robust view integration</li>
+      <li>SparseNeRF’s geometric constraints for stability</li>
+      <li>ZeroRF’s optimization scheme for flexibility</li>
+    </ul>
+    <p>This hybrid model could be trained with photometric and perceptual losses for higher-quality reconstructions from as few as one image.</p>
+  </div>
+
+  <div class="section">
+    <h2>Supplementary</h2>
+    <p>
+      <a href="https://github.com/example/nerf-sparse-benchmark" target="_blank">View Project Code</a><br>
+      <a href="videos/reconstruction_demo.mp4" target="_blank">Watch Reconstruction Video</a><br>
+      <a href="results/full_results.pdf" target="_blank">Download Full Results PDF</a>
+    </p>
+  </div>
+
+</body>
+</html>
