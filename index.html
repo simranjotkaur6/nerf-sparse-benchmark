@@ -9,9 +9,11 @@
       font-family: Arial, sans-serif;
       margin: 2rem;
       line-height: 1.6;
+      background-color: #fafafa;
+      color: #333;
     }
     h1, h2, h3 {
-      color: #333;
+      color: #222;
     }
     img, video {
       max-width: 100%;
@@ -20,75 +22,101 @@
     .section {
       margin-bottom: 3rem;
     }
+    a {
+      color: #007acc;
+    }
     code {
-      background: #f2f2f2;
-      padding: 2px 4px;
-      font-size: 0.9em;
+      background: #f0f0f0;
+      padding: 2px 5px;
+      font-size: 0.95em;
     }
   </style>
 </head>
 <body>
-  <h1>Simran Jot Kaur — Benchmarking NeRF Variants on Sparse-View Reconstruction</h1>
+  <h1>Benchmarking NeRF Variants on Sparse-View Reconstruction</h1>
 
   <div class="section">
     <h2>Problem Summary</h2>
-    <p>Neural Radiance Fields (NeRFs) are powerful tools for synthesizing novel views of a scene. However, they typically require a large number of input images. In many practical applications like AR/VR, robotics, and medical imaging, we often only have access to a few views. This project benchmarks NeRF variants designed to operate effectively under such sparse-view constraints.</p>
+    <p>Neural Radiance Fields (NeRFs) have emerged as state-of-the-art methods for novel view synthesis. However, they depend on dense image inputs with known camera poses, which limits their usability in real-world scenarios such as AR/VR applications, mobile robotics, and medical imaging—domains where collecting hundreds of calibrated images is infeasible. In sparse-view settings, NeRFs often suffer from:</p>
+    <ul>
+      <li><strong>Shape-radiance ambiguity</strong>: Multiple plausible shapes could explain the few views.</li>
+      <li><strong>Lack of geometric constraints</strong>: Especially in occluded or textureless regions.</li>
+      <li><strong>Overfitting</strong>: Instead of generalizing, models memorize the few seen views.</li>
+    </ul>
+    <p>This project benchmarks several NeRF variants specifically designed to address sparse input constraints.</p>
   </div>
 
   <div class="section">
     <h2>Previous Work</h2>
     <ul>
-      <li><strong>PixelNeRF</strong>: Introduces scene-agnostic priors using CNN-based feature extraction.</li>
-      <li><strong>SparseNeRF</strong>: Utilizes self-supervised geometric consistency via depth ranking.</li>
-      <li><strong>S3NeRF</strong>: Leverages multi-view feature fusion and scene-specific training.</li>
-      <li><strong>ZeroRF</strong>: A Deep Image Prior method that trains per-scene without pretraining.</li>
+      <li><strong>PixelNeRF</strong>: Introduces scene-agnostic priors using a CNN encoder and pixel-aligned features. It generalizes well to unseen scenes but degrades with extreme sparsity.</li>
+      <li><strong>SparseNeRF</strong>: Introduces geometric consistency via depth ranking losses between view projections. This improves 3D stability without needing ground-truth depth.</li>
+      <li><strong>S3NeRF</strong>: Enhances robustness with multi-view feature fusion (e.g., attention modules), achieving best-in-class reconstruction in 1–3 view settings at the cost of higher memory usage.</li>
+      <li><strong>ZeroRF</strong>: Uses a Deep Image Prior strategy to optimize a randomly initialized MLP per scene. This needs no pretraining but converges slower and yields lower fidelity in complex scenes.</li>
     </ul>
   </div>
 
   <div class="section">
     <h2>Description of Work</h2>
-    <p>We implemented and evaluated four NeRF models under sparse-view constraints (1, 3, and 9 input views) across two datasets: <strong>NeRF-Synthetic</strong> and <strong>DTU</strong>. Metrics used include PSNR, SSIM, LPIPS, and MAE.</p>
-    <p>Models were tested for generalization, geometric fidelity, perceptual quality, and computational efficiency.</p>
+    <p>We implemented and benchmarked the above four models on two datasets:</p>
+    <ul>
+      <li><strong>NeRF-Synthetic</strong>: Clean, synthetic scenes with known geometry and fixed lighting.</li>
+      <li><strong>DTU</strong>: Real-world scans with complex geometry and large camera motions.</li>
+    </ul>
+    <p>We tested each model under three sparse-view configurations: 1, 3, and 9 input views.</p>
+    <p>Evaluation metrics used:</p>
+    <ul>
+      <li><strong>PSNR</strong>: Peak Signal-to-Noise Ratio for pixel accuracy.</li>
+      <li><strong>SSIM</strong>: Structural Similarity Index for perceptual structure.</li>
+      <li><strong>LPIPS</strong>: Learned Perceptual Image Patch Similarity for visual fidelity.</li>
+      <li><strong>MAE</strong>: Pose estimation error, where applicable.</li>
+    </ul>
   </div>
 
   <div class="section">
     <h2>Results</h2>
+    <p>Findings per model:</p>
     <ul>
-      <li><strong>PixelNeRF</strong>: Best generalization on unseen scenes; performance drops in 1-view settings.</li>
-      <li><strong>SparseNeRF</strong>: Excellent geometry retention from 1–3 views, especially in occluded regions.</li>
-      <li><strong>S3NeRF</strong>: Best perceptual and structural quality; more memory-intensive.</li>
-      <li><strong>ZeroRF</strong>: Works well with 3+ views but slower and less detailed under severe sparsity.</li>
+      <li><strong>PixelNeRF</strong> works best in scenes with texture and when 5+ views are available. Its CNN encoder allows for generalization, but performance drops with fewer views.</li>
+      <li><strong>SparseNeRF</strong> excels at preserving geometric structure from as little as one image. Its depth-based constraints help maintain consistent shape under occlusion.</li>
+      <li><strong>S3NeRF</strong> yields the highest quality results even with just 1–3 views, thanks to its attention-based fusion of multiple views and strong scene-specific priors.</li>
+      <li><strong>ZeroRF</strong> offers a flexible fallback for domains lacking training data, though it's computationally heavy and prone to blurry reconstructions with extreme sparsity.</li>
     </ul>
-    <img src="results/sparse_nerf_comparison.png" alt="Comparison Chart">
+    <p>Visual comparisons are shown below:</p>
+    <img src="results/sparse_nerf_comparison.png" alt="Model Comparison Results">
   </div>
 
   <div class="section">
     <h2>Analysis of Work</h2>
     <h3>New Results</h3>
-    <p>This project presents the first direct benchmark comparison across four NeRF variants on sparse inputs under unified conditions. It highlights the individual strengths and limitations of each approach.</p>
+    <p>We provide the first unified benchmark of these models under consistent sparse-view settings. Our analysis uncovers the specific strengths and limitations of each approach across dataset types.</p>
 
     <h3>Meeting Goals</h3>
-    <p>We achieved our goals of comparing performance across sparse scenarios, identifying suitable models per use case, and proposing a hybrid design for future work.</p>
+    <p>All primary goals were met:</p>
+    <ul>
+      <li>Comparing model performance under 1–9 views</li>
+      <li>Evaluating quality using multiple perceptual and structural metrics</li>
+      <li>Proposing a hybrid NeRF architecture</li>
+    </ul>
 
     <h3>Future Work</h3>
-    <p>We propose a hybrid architecture combining:</p>
+    <p>We propose a hybrid model that combines:</p>
     <ul>
-      <li>PixelNeRF’s encoder for generalization</li>
-      <li>S3NeRF’s feature fusion for robust view integration</li>
-      <li>SparseNeRF’s geometric constraints for stability</li>
-      <li>ZeroRF’s optimization scheme for flexibility</li>
+      <li><strong>Encoder</strong>: Scene-agnostic CNN (PixelNeRF)</li>
+      <li><strong>Fusion</strong>: Cross-view attention (S3NeRF)</li>
+      <li><strong>Backbone</strong>: Factorized MLP with Deep Image Prior (ZeroRF)</li>
+      <li><strong>Geometry</strong>: Depth ranking and smoothness regularization (SparseNeRF)</li>
     </ul>
-    <p>This hybrid model could be trained with photometric and perceptual losses for higher-quality reconstructions from as few as one image.</p>
+    <p>Training this hybrid model with both photometric and perceptual loss functions is expected to provide high-fidelity reconstructions with only 1–3 input views.</p>
   </div>
 
   <div class="section">
-    <h2>Supplementary</h2>
+    <h2>Supplementary Materials</h2>
     <p>
-      <a href="https://github.com/example/nerf-sparse-benchmark" target="_blank">View Project Code</a><br>
-      <a href="videos/reconstruction_demo.mp4" target="_blank">Watch Reconstruction Video</a><br>
-      <a href="results/full_results.pdf" target="_blank">Download Full Results PDF</a>
+      <a href="https://github.com/example/nerf-sparse-benchmark" target="_blank">🔗 Project Repository (Code + Datasets)</a><br>
+      <a href="videos/reconstruction_demo.mp4" target="_blank">🎥 Reconstruction Demo Video</a><br>
+      <a href="results/full_results.pdf" target="_blank">📄 Full Results & Metrics Report (PDF)</a>
     </p>
   </div>
-
 </body>
 </html>
