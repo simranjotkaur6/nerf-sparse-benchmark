@@ -5,36 +5,109 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Benchmarking NeRF Variants on Sparse-View Reconstruction</title>
   <style>
+    
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 2rem;
-      line-height: 1.6;
+      line-height: 1.7;
       background-color: #fafafa;
       color: #333;
     }
-    h1, h2, h3 {
+  
+    h1, h2, h3, h4 {
       color: #222;
+      margin-bottom: 0.6rem;
     }
+  
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.3rem;
+      margin-top: 2rem;
+    }
+  
+    h3 {
+      margin-top: 1.5rem;
+    }
+  
     img, video {
       max-width: 100%;
       height: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
     }
+  
+    img:hover {
+      transform: scale(1.01);
+    }
+  
     .section {
       margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e0e0e0;
     }
+  
+    ul {
+      margin-top: 0.5rem;
+      padding-left: 1.2rem;
+    }
+  
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+  
     a {
       color: #007acc;
+      text-decoration: none;
     }
+  
+    a:hover {
+      text-decoration: underline;
+    }
+  
     code {
       background: #f0f0f0;
-      padding: 2px 5px;
+      padding: 2px 6px;
+      border-radius: 3px;
       font-size: 0.95em;
+      color: #c7254e;
+    }
+  
+    p {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  
+    .image-caption {
+      font-style: italic;
+      color: #666;
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+  
+    h4 {
+      margin: 1rem 0 0.5rem 0;
+      font-weight: 600;
+      color: #444;
+    }
+  
+    .section img {
+      border: 1px solid #ddd;
+      border-radius: 6px;
     }
   </style>
+  
 </head>
 <body>
-  <h1>Benchmarking NeRF Variants on Sparse-View Reconstruction</h1>
-
+  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+    <img src="public/images/main.gif" alt="Sparse-view NeRF comparison" style="width: 180px; height: auto; border-radius: 6px;">
+    <h1 style="margin: 0;">Benchmarking NeRF Variants on Sparse-View Reconstruction</h1>
+  </div>
   <div class="section">
     <h2>Problem Summary</h2>
     <p>Neural Radiance Fields (NeRFs) have emerged as state-of-the-art methods for novel view synthesis. However, they depend on dense image inputs with known camera poses, which limits their usability in real-world scenarios such as AR/VR applications, mobile robotics, and medical imaging—domains where collecting hundreds of calibrated images is infeasible. In sparse-view settings, NeRFs often suffer from:</p>
@@ -45,6 +118,8 @@
     </ul>
     <p>This project benchmarks several NeRF variants specifically designed to address sparse input constraints.</p>
   </div>
+
+
 
   <div class="section">
     <h2>Previous Work</h2>
@@ -74,16 +149,86 @@
   </div>
 
   <div class="section">
-    <h2>Results</h2>
-    <p>Findings per model:</p>
-    <ul>
-      <li><strong>PixelNeRF</strong> works best in scenes with texture and when 5+ views are available. Its CNN encoder allows for generalization, but performance drops with fewer views.</li>
-      <li><strong>SparseNeRF</strong> excels at preserving geometric structure from as little as one image. Its depth-based constraints help maintain consistent shape under occlusion.</li>
-      <li><strong>S3NeRF</strong> yields the highest quality results even with just 1–3 views, thanks to its attention-based fusion of multiple views and strong scene-specific priors.</li>
-      <li><strong>ZeroRF</strong> offers a flexible fallback for domains lacking training data, though it's computationally heavy and prone to blurry reconstructions with extreme sparsity.</li>
-    </ul>
-    <p>Visual comparisons are shown below:</p>
-    <img src="results/sparse_nerf_comparison.png" alt="Model Comparison Results">
+    <div class="section">
+      <h2>Results</h2>
+      <p>Findings per model:</p>
+      <ul>
+        <li><strong>PixelNeRF</strong> works best in scenes with texture and when 5+ views are available. Its CNN encoder allows for generalization, but performance drops with fewer views.</li>
+        <li><strong>SparseNeRF</strong> excels at preserving geometric structure from as little as one image. Its depth-based constraints help maintain consistent shape under occlusion.</li>
+        <li><strong>S3NeRF</strong> yields the highest quality results even with just 1–3 views, thanks to its attention-based fusion of multiple views and strong scene-specific priors.</li>
+        <li><strong>ZeroRF</strong> offers a flexible fallback for domains lacking training data, though it's computationally heavy and prone to blurry reconstructions with extreme sparsity.</li>
+      </ul>
+    
+      <p>Visual comparisons are shown below:</p>
+    
+      <h3>PixelNeRF vs SparseNeRF: Qualitative Comparison</h3>
+        <p>Each row compares the same scene. <strong>Left:</strong> PixelNeRF &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Right:</strong> SparseNeRF</p>
+
+        <h4>1 View</h4>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; width: 65%;">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; padding: 0 0.5rem; margin-bottom: 0.5rem; color: #555;">
+            <span>PixelNeRF</span>
+            <span>SparseNeRF</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 1rem;">
+            <img src="public/images/pixel1view.gif" alt="PixelNeRF - Example 1" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+            <img src="public/images/sparse1viewbuild.gif" alt="SparseNeRF - Example 1" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 1rem;">
+            <img src="public/images/pixel1view-1.gif" alt="PixelNeRF - Example 2" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+            <img src="public/images/sparse1view.gif" alt="SparseNeRF - Example 2" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+          </div>
+          
+        </div>
+
+        <h4>3 Views</h4>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; width: 65%;">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; padding: 0 0.5rem; margin-bottom: 0.5rem; color: #555;">
+            <span>PixelNeRF</span>
+            <span>SparseNeRF</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 1rem;">
+            <img src="public/images/pixel3view.gif" alt="PixelNeRF - Example 1" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+            <img src="public/images/sparse3viewbuild.gif" alt="SparseNeRF - Example 1" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 1rem;">
+            <img src="public/images/pixel3view-2.gif" alt="PixelNeRF - Example 2" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+            <img src="public/images/sparse3view.gif" alt="SparseNeRF - Example 2" style="width:48%; border:1px solid #ddd; border-radius:4px;">
+          </div>
+        </div>
+
+        <h3>S3NeRF: Visual Results</h3>
+          <p>Below are 4 examples of S3NeRF outputs under <strong>3-view</strong> settings.</p>
+
+          <h4>3 Views</h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+            <img src="public/images/s3nerf1.gif" alt="S3NeRF 3-view Example 1" style="width:23%; border:1px solid #ddd; border-radius:4px;">
+            <img src="public/images/s3nerf2.gif" alt="S3NeRF 3-view Example 2" style="width:23%; border:1px solid #ddd; border-radius:4px;">
+          </div>
+
+          <h3>ZeroRF: Visual Results</h3>
+          <p>ZeroRF uses a Deep Image Prior strategy that requires no pretraining but often struggles with fine detail in sparse-view setups.</p>
+          
+          <!-- Row 1: 1-view and 3-view side-by-side -->
+          <div style="display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; width: 65%;">
+            <div style="flex: 1;">
+              <h4 style="text-align: center;">1 View</h4>
+              <img src="public/images/zero1view.gif" alt="ZeroRF 1-view Example" style="width:100%; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <div style="flex: 1;">
+              <h4 style="text-align: center;">3 Views</h4>
+              <img src="public/images/zero3view.gif" alt="ZeroRF 3-view Example 1" style="width:100%; border:1px solid #ddd; border-radius:4px;">
+            </div>
+          </div>
+          
+          <!-- Row 2: One more 3-view result -->
+          <div style="margin-bottom: 2rem; width: 65%; ">
+            <h4 style="text-align: center;">3 Views</h4>
+            <img src="public/images/zero3view1.gif" alt="ZeroRF 3-view Example 2" style="width:48%; height: 50%;display:block; margin:0 auto; border:1px solid #ddd; border-radius:4px;">
+          </div>          
+
+
+    
   </div>
 
   <div class="section">
@@ -108,15 +253,44 @@
       <li><strong>Geometry</strong>: Depth ranking and smoothness regularization (SparseNeRF)</li>
     </ul>
     <p>Training this hybrid model with both photometric and perceptual loss functions is expected to provide high-fidelity reconstructions with only 1–3 input views.</p>
+    <div style="margin: 1.5rem 0; text-align: center;">
+      <img src="public/images/image copy.png" alt="Proposed Hybrid NeRF Architecture" style="max-width:60%; border:1px dashed #aaa; border-radius:6px; padding:10px;">
+      <p style="font-style: italic; color: #666;">Proposed hybrid NeRF model architecture</p>
+    </div>
   </div>
 
   <div class="section">
-    <h2>Supplementary Materials</h2>
-    <p>
-      <a href="https://github.com/example/nerf-sparse-benchmark" target="_blank">🔗 Project Repository (Code + Datasets)</a><br>
-      <a href="videos/reconstruction_demo.mp4" target="_blank">🎥 Reconstruction Demo Video</a><br>
-      <a href="results/full_results.pdf" target="_blank">📄 Full Results & Metrics Report (PDF)</a>
-    </p>
+    <h2>References</h2>
+    <ol>
+      <li>
+        Alex Yu, Vickie Ye, Matthew Tancik, Angjoo Kanazawa.<br>
+        <strong><a href="https://arxiv.org/abs/2012.02190" target="_blank">PixelNeRF: Neural Radiance Fields from One or Few Images</a></strong>. CVPR 2021.<br>
+        <em>PixelNeRF learns a scene-agnostic prior using a fully convolutional NeRF architecture that enables single or few-shot novel view synthesis without 3D supervision. It generalizes across scenes and categories on datasets like ShapeNet and DTU.</em><br>
+       
+      </li>
+  
+      <li>
+        Guangcong Wang, Zhaoxi Chen, Chen Change Loy, Ziwei Liu.<br>
+        <strong><a href="https://arxiv.org/abs/2311.10902" target="_blank">SparseNeRF: Distilling Depth Ranking for Few-shot Novel View Synthesis</a></strong>. arXiv:2311.10902 [cs.CV], 2023.<br>
+        <em>SparseNeRF uses coarse or noisy depth maps from consumer sensors and applies depth ranking and spatial continuity constraints to enable few-shot novel view synthesis. It shows strong performance on LLFF, DTU, and the new NVS-RGBD dataset.</em>
+      </li>
+  
+      <li>
+        Wenqi Yang, Guanying Chen, Chaofeng Chen, Zhenfang Chen, Kwan-Yee K. Wong.<br>
+        <strong><a href="https://arxiv.org/abs/2305.07085" target="_blank">S<sup>3</sup>-NeRF: Neural Reflectance Field from Shading and Shadow under a Single Viewpoint</a></strong>. arXiv:2305.07085 [cs.CV], 2023.<br>
+        <em>This method reconstructs full 3D geometry and BRDFs from single-view images lit under varying point lights. It leverages shading and shadows instead of multi-view photo-consistency and supports applications like relighting and novel view synthesis.</em>
+      </li>
+  
+      <li>
+        Ruoxi Shi, Xinyue Wei, Cheng Wang, Hao Su.<br>
+        <strong><a href="https://arxiv.org/abs/2312.09249" target="_blank">ZeroRF: Fast Sparse View 360° Reconstruction with Zero Pretraining</a></strong>. arXiv:2312.09249 [cs.CV], 2023.<br>
+        <em>ZeroRF integrates a Deep Image Prior into a factorized NeRF framework to enable fast and generalizable 360° reconstruction from sparse views without pretraining. It achieves SOTA results on multiple sparse-view benchmarks.</em><br>
+      </li>
+    </ol>
   </div>
+  
+  
+
+  
 </body>
 </html>
