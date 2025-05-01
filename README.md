@@ -4,7 +4,7 @@ This project benchmarks four NeRF variants under sparse-view (1–9 input views)
 
 - **PixelNeRF** – CNN-based scene prior
 - **SparseNeRF** – Depth ranking & smoothness constraints
-- **S3-NeRF** – Reflectance fields from shading & shadow (single view)
+- **S3-NeRF** – Reflectance fields from shading & shadow
 - **ZeroRF** – Factorized NeRF with Deep Image Prior (no pretraining)
 
 ## 📊 Datasets & Metrics
