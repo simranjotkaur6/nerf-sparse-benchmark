@@ -18,7 +18,7 @@ This project benchmarks four NeRF variants under sparse-view (1–9 input views)
 - Quantitative results on standard benchmarks
 - Proposed hybrid NeRF combining best components of all models
 
-## 🌐 Live Demo
+## 🌐 Visual Results
 
 👉 View the full results and visualizations here:  
 **[https://simranjotkaur6.github.io/nerf-sparse-benchmark/](https://simranjotkaur6.github.io/nerf-sparse-benchmark/)**
